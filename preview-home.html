@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview - Small steps - Every day.</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪜</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#EEF3EE;--ink:#14213D;--step:#C9D8CF;--done:#2F6F5E;--today:#F2A541;--muted:#4A5873}
+@media (prefers-color-scheme:dark){:root{--paper:#0F1A2E;--ink:#EAF1EA;--step:#22314D;--done:#5CC2A3;--today:#F2A541;--muted:#9AA9C4}}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--paper);color:var(--ink)}
+body{font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;line-height:1.5}
+main{max-width:960px;margin:0 auto;padding:clamp(24px,6vw,72px) clamp(20px,5vw,48px)}
+h1{font-weight:800;letter-spacing:-.04em;line-height:.95;font-size:clamp(3rem,13vw,8.5rem)}
+.s1,.s2{display:block;width:fit-content}
+.s1{padding-bottom:.08em;border-bottom:.09em solid var(--done)}
+.s2{margin-left:clamp(32px,14vw,160px);padding-bottom:.08em;border-bottom:.09em solid var(--today);margin-top:.12em}
+.indent{margin-left:clamp(32px,14vw,160px)}
+.lead{margin-top:clamp(28px,5vw,48px);max-width:32ch;color:var(--muted);font-size:1.15rem}
+#social{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+#social a{color:var(--ink);font-weight:800;text-decoration:none;border:2px solid var(--ink);border-radius:999px;padding:8px 18px}
+#social a:hover{background:var(--ink);color:var(--paper)}
+#social a:focus-visible,button:focus-visible{outline:3px solid var(--today);outline-offset:3px}
+section{margin-top:clamp(56px,10vw,110px)}
+h2{font-weight:800;font-size:1.6rem;letter-spacing:-.02em}
+.sub{color:var(--muted);margin-top:4px}
+#ideas{margin-top:26px}
+.idea{border-left:6px solid var(--done);padding:2px 0 2px 18px;margin-bottom:22px;max-width:60ch}
+.idea:nth-child(3n+2){margin-left:clamp(12px,4vw,48px);border-color:var(--today)}
+.idea:nth-child(3n){margin-left:clamp(24px,8vw,96px)}
+.idea h3{font-size:1.15rem;font-weight:800}
+.idea p{color:var(--muted)}
+.stairs{display:grid;grid-template-columns:repeat(30,1fr);align-items:end;gap:3px;height:200px;margin-top:28px}
+.stairs i{display:block;background:var(--step);border-radius:3px 3px 0 0;transition:background .3s}
+.stairs i.done{background:var(--done)}.stairs i.now{background:var(--today)}
+.row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:24px}
+button{font:inherit;font-weight:800;border:0;border-radius:999px;padding:14px 26px;background:var(--ink);color:var(--paper);cursor:pointer}
+button[disabled]{background:var(--done);color:#fff;cursor:default}
+.count{font-weight:800}
+.reset{background:none;color:var(--muted);padding:8px 4px;font-weight:400;text-decoration:underline}
+footer{margin-top:80px;color:var(--muted);font-size:.95rem}
+@media (max-width:560px){.stairs{gap:2px;height:150px}}
+</style>
+</head>
+<body>
+<main>
+  <h1><span class="s1">Small steps</span><span class="s2">Every day.</span></h1>
+  <p class="lead indent">You don't need a giant leap. Do one small thing today, and do it again tomorrow.</p>
+  <nav id="social" class="indent" aria-label="Social links"></nav>
+
+  <section aria-labelledby="i">
+    <h2 id="i">Ideas for your next small step</h2>
+    <p class="sub">Pick one. Do it today.</p>
+    <div id="ideas"><p class="sub">Loading ideas...</p></div>
+  </section>
+
+  <section aria-labelledby="t">
+    <h2 id="t">Your 30-step staircase</h2>
+    <p class="sub">Tap the button each day you take your step. It saves in this browser.</p>
+    <div class="stairs" id="stairs" aria-hidden="true"></div>
+    <div class="row">
+      <button id="btn" type="button">I took my step today</button>
+      <span class="count" id="count" aria-live="polite"></span>
+      <button class="reset" id="reset" type="button">Start over</button>
+    </div>
+  </section>
+
+  <footer>Small steps - Every day.</footer>
+</main>
+
+<script>
+(function(){
+  var DATA={"social": {"facebook": "https://example.com/facebook", "youtube": "https://example.com/youtube", "instagram": "https://example.com/instagram", "tiktok": "https://example.com/tiktok"}, "ideas": [{"title": "Drink water first", "text": "Have a full glass of water before you touch your phone in the morning."}, {"title": "Read one page", "text": "Just one. If you want to read more, great. If not, you still kept the habit."}, {"title": "Walk for 10 minutes", "text": "Around the house, down the street, anywhere. No target, no tracking."}, {"title": "Write three good things", "text": "Note three things from today that went well, however small."}, {"title": "Learn one new word", "text": "Look it up, say it out loud, and use it once today."}, {"title": "Stretch for two minutes", "text": "Reach up, bend down, roll your shoulders. Your body will thank you."}, {"title": "Tidy one small spot", "text": "A desk, a shelf, a drawer. One spot only, then stop."}, {"title": "Put your phone away for 30 minutes", "text": "Face down, in another room. Do one thing with your full attention."}, {"title": "Save a little", "text": "Even 10 taka counts. The habit matters more than the amount."}, {"title": "Message someone you care about", "text": "A short hello to a friend or a family member you haven't talked to in a while."}, {"title": "Sleep 15 minutes earlier", "text": "Move your bedtime a little. Next week, move it a little more."}, {"title": "Plan tomorrow in three lines", "text": "Write the three things that matter most. Everything else is a bonus."}]};
+  /* ---- content from data.json (edited in admin.html) ---- */
+  var NAMES={facebook:"Facebook",youtube:"YouTube",instagram:"Instagram",tiktok:"TikTok"};
+  function safe(u){return typeof u==="string"&&/^https?:\/\//i.test(u.trim());}
+  Promise.resolve(DATA).then(function(d){
+    var soc=document.getElementById("social"), box=document.getElementById("ideas"), n=0;
+    Object.keys(NAMES).forEach(function(k){
+      var u=d.social&&d.social[k];
+      if(safe(u)){var a=document.createElement("a");a.href=u.trim();a.target="_blank";a.rel="noopener noreferrer";a.textContent=NAMES[k];soc.appendChild(a);n++;}
+    });
+    if(!n)soc.style.display="none";
+    box.innerHTML="";
+    (d.ideas||[]).forEach(function(it){
+      var w=document.createElement("div");w.className="idea";
+      var h=document.createElement("h3");h.textContent=it.title||"";
+      var p=document.createElement("p");p.textContent=it.text||"";
+      w.appendChild(h);w.appendChild(p);box.appendChild(w);
+    });
+  }).catch(function(){
+    document.getElementById("social").style.display="none";
+    document.getElementById("ideas").innerHTML='<p class="sub">Ideas could not load. Open this page from your GitHub Pages link.</p>';
+  });
+
+  /* ---- staircase tracker ---- */
+  var KEY="small-steps-days",TOTAL=30;
+  var stairs=document.getElementById("stairs"),btn=document.getElementById("btn"),count=document.getElementById("count"),reset=document.getElementById("reset");
+  function today(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}
+  function load(){try{var v=JSON.parse(localStorage.getItem(KEY));return Array.isArray(v)?v:[];}catch(e){return [];}}
+  function save(v){try{localStorage.setItem(KEY,JSON.stringify(v));}catch(e){}}
+  var days=load();
+  for(var i=0;i<TOTAL;i++){var s=document.createElement("i");s.style.height=(14+i*(86/(TOTAL-1)))+"%";stairs.appendChild(s);}
+  function render(){
+    var n=Math.min(days.length,TOTAL),bars=stairs.children,took=days.indexOf(today())>-1;
+    for(var i=0;i<TOTAL;i++){bars[i].className=i<n?(took&&i===n-1?"now":"done"):"";}
+    count.textContent=n+" of "+TOTAL+" steps";
+    btn.disabled=took;
+    btn.textContent=took?"Today's step is done":"I took my step today";
+  }
+  btn.addEventListener("click",function(){if(days.indexOf(today())===-1){days.push(today());save(days);render();}});
+  reset.addEventListener("click",function(){if(confirm("Clear all your steps and start over?")){days=[];save(days);render();}});
+  render();
+})();
+</script>
+</body>
+</html>
